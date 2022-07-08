@@ -216,6 +216,7 @@ export enum TDStatus {
 }
 
 export type TDToolType =
+  | 'text-select'
   | 'select'
   | 'erase'
   | TDShapeType.Text

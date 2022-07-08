@@ -3,6 +3,7 @@ import { useIntl } from 'react-intl'
 import {
   ArrowTopRightIcon,
   CursorArrowIcon,
+  CursorTextIcon,
   Pencil1Icon,
   Pencil2Icon,
   TextIcon,
@@ -26,6 +27,10 @@ export const PrimaryTools = React.memo(function PrimaryTools() {
 
   const isToolLocked = app.useStore(toolLockedSelector)
   const dockPosition = app.useStore(dockPositionState)
+
+  const selectTextSelectTool = React.useCallback(() => {
+    app.selectTool('text-select')
+  }, [app])
 
   const selectSelectTool = React.useCallback(() => {
     app.selectTool('select')
@@ -55,6 +60,15 @@ export const PrimaryTools = React.memo(function PrimaryTools() {
 
   return (
     <Panel side="center" id="TD-PrimaryTools" style={{ flexDirection: panelStyle }}>
+      <ToolButtonWithTooltip
+        kbd={'0'}
+        label={intl.formatMessage({ id: 'text-select' })}
+        onClick={selectTextSelectTool}
+        isActive={activeTool === 'text-select'}
+        id="TD-PrimaryTools-TextSelect"
+      >
+        <CursorTextIcon />
+      </ToolButtonWithTooltip>
       <ToolButtonWithTooltip
         kbd={'1'}
         label={intl.formatMessage({ id: 'select' })}
