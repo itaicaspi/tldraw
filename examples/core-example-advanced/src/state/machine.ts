@@ -35,7 +35,7 @@ export const machine = createState({
     UPDATED_BINDINGS: ['updateBindings', 'updateBoundShapes', 'addToHistory'],
     DELETED_BINDINGS: ['deleteBindings', 'updateBoundShapes', 'addToHistory'],
   },
-  initial: 'select',
+  initial: 'textSelect',
   states: {
     select: {
       initial: 'idle',

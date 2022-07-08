@@ -49,6 +49,7 @@ interface CanvasProps<T extends TLShape, M extends Record<string, unknown>> {
   hideResizeHandles: boolean
   hideRotateHandle: boolean
   hideGrid: boolean
+  ignorePointer: boolean
   showDashedBrush: boolean
   externalContainerRef?: React.RefObject<HTMLElement>
   performanceMode?: TLPerformanceMode
@@ -82,6 +83,7 @@ export const Canvas = observer(function _Canvas<
   hideResizeHandles,
   hideRotateHandle,
   hideGrid,
+  ignorePointer,
   onBoundsChange,
 }: CanvasProps<T, M>) {
   const rCanvas = React.useRef<HTMLDivElement>(null)
@@ -112,7 +114,7 @@ export const Canvas = observer(function _Canvas<
 
   return (
     <div id={id} className="tl-container" ref={rContainer}>
-      <div id="canvas" className="tl-absolute tl-canvas" ref={rCanvas} {...events}>
+      <div id="canvas" className="tl-absolute tl-canvas" style={{pointerEvents: ignorePointer ? 'none' : 'auto'}} ref={rCanvas} {...events}>
         {!hideGrid && grid && <Grid grid={grid} camera={pageState.camera} />}
         <div ref={rLayer} className="tl-absolute tl-layer" data-testid="layer">
           <Page

@@ -29,7 +29,7 @@ export const PrimaryTools = React.memo(function PrimaryTools() {
   const dockPosition = app.useStore(dockPositionState)
 
   const selectTextSelectTool = React.useCallback(() => {
-    app.selectTool('text-select')
+    app.selectTool('textSelect')
   }, [app])
 
   const selectSelectTool = React.useCallback(() => {
@@ -57,14 +57,14 @@ export const PrimaryTools = React.memo(function PrimaryTools() {
   }, [app])
 
   const panelStyle = dockPosition === 'bottom' || dockPosition === 'top' ? 'row' : 'column'
-
+  console.log(activeTool)
   return (
     <Panel side="center" id="TD-PrimaryTools" style={{ flexDirection: panelStyle }}>
       <ToolButtonWithTooltip
         kbd={'0'}
-        label={intl.formatMessage({ id: 'text-select' })}
+        label={intl.formatMessage({ id: 'textSelect' })}
         onClick={selectTextSelectTool}
-        isActive={activeTool === 'text-select'}
+        isActive={activeTool === 'textSelect'}
         id="TD-PrimaryTools-TextSelect"
       >
         <CursorTextIcon />
@@ -117,15 +117,15 @@ export const PrimaryTools = React.memo(function PrimaryTools() {
       >
         <TextIcon />
       </ToolButtonWithTooltip>
-      <ToolButtonWithTooltip
-        kbd={'0'}
-        label={intl.formatMessage({ id: 'sticky' })}
-        onClick={selectStickyTool}
-        isActive={activeTool === TDShapeType.Sticky}
-        id="TD-PrimaryTools-Pencil2"
-      >
-        <Pencil2Icon />
-      </ToolButtonWithTooltip>
+      {/*<ToolButtonWithTooltip*/}
+      {/*  kbd={'0'}*/}
+      {/*  label={intl.formatMessage({ id: 'sticky' })}*/}
+      {/*  onClick={selectStickyTool}*/}
+      {/*  isActive={activeTool === TDShapeType.Sticky}*/}
+      {/*  id="TD-PrimaryTools-Pencil2"*/}
+      {/*>*/}
+      {/*  <Pencil2Icon />*/}
+      {/*</ToolButtonWithTooltip>*/}
     </Panel>
   )
 })

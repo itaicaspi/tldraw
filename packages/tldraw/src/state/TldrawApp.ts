@@ -84,6 +84,7 @@ import { clearPrevSize } from './shapes/shared/getTextSize'
 import { getClipboard, setClipboard } from './IdbClipboard'
 import { deepCopy } from './StateManager/copy'
 import { getTranslation } from '~translations'
+import { TextSelectTool } from './tools/TextSelectTool'
 
 const uuid = Utils.uniqueId()
 
@@ -188,6 +189,7 @@ export class TldrawApp extends StateManager<TDSnapshot> {
   callbacks: TDCallbacks = {}
 
   tools = {
+    textSelect: new TextSelectTool(this),
     select: new SelectTool(this),
     erase: new EraseTool(this),
     [TDShapeType.Text]: new TextTool(this),
@@ -200,7 +202,7 @@ export class TldrawApp extends StateManager<TDSnapshot> {
     [TDShapeType.Sticky]: new StickyTool(this),
   }
 
-  currentTool: BaseTool = this.tools.select
+  currentTool: BaseTool = this.tools.textSelect
 
   session?: TldrawSession
 
@@ -1225,7 +1227,7 @@ export class TldrawApp extends StateManager<TDSnapshot> {
     if (this.session) return this
     this.session = undefined
     this.pasteInfo.offset = [0, 0]
-    this.currentTool = this.tools.select
+    this.currentTool = this.tools.textSelect
 
     const doc = TldrawApp.defaultDocument
 
@@ -2684,9 +2686,6 @@ export class TldrawApp extends StateManager<TDSnapshot> {
 
     return this.patchState(
       {
-        appState: {
-          activeTool: 'select',
-        },
         document: {
           pageStates: {
             [this.currentPageId]: {
@@ -4171,7 +4170,7 @@ export class TldrawApp extends StateManager<TDSnapshot> {
     },
     appState: {
       status: TDStatus.Idle,
-      activeTool: 'select',
+      activeTool: 'textSelect',
       hoveredId: undefined,
       currentPageId: 'page',
       currentStyle: defaultStyle,

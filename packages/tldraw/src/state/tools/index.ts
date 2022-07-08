@@ -5,12 +5,14 @@ import { DrawTool } from './DrawTool'
 import { EllipseTool } from './EllipseTool'
 import { RectangleTool } from './RectangleTool'
 import { TriangleTool } from './TriangleTool'
+import { TextSelectTool } from './TextSelectTool'
 import { SelectTool } from './SelectTool'
 import { StickyTool } from './StickyTool'
 import { TextTool } from './TextTool'
 import { EraseTool } from './EraseTool'
 
 export interface ToolsMap {
+  textSelect: typeof TextSelectTool,
   select: typeof SelectTool
   erase: typeof EraseTool
   [TDShapeType.Text]: typeof TextTool
@@ -28,6 +30,7 @@ export type ToolOfType<K extends TDToolType> = ToolsMap[K]
 export type ArgsOfType<K extends TDToolType> = ConstructorParameters<ToolOfType<K>>
 
 export const tools: { [K in TDToolType]: ToolsMap[K] } = {
+  textSelect: TextSelectTool,
   select: SelectTool,
   erase: EraseTool,
   [TDShapeType.Text]: TextTool,

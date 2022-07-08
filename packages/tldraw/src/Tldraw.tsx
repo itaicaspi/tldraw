@@ -482,6 +482,7 @@ const InnerTldraw = React.memo(function InnerTldraw({
               hideCloneHandles={hideCloneHandles}
               hideRotateHandles={!settings.showRotateHandles}
               hideGrid={!settings.showGrid}
+              ignorePointer={app.currentTool.type === 'textSelect'}
               showDashedBrush={showDashedBrush}
               performanceMode={app.session?.performanceMode}
               onPinchStart={app.onPinchStart}

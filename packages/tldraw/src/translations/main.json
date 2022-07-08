@@ -57,6 +57,7 @@
   "copy.readonly.link": "Copy ReadOnly Link",
   "create.multiplayer.project": "Create a Multiplayer Project",
   "copy.multiplayer.project": "Copy to Multiplayer Project",
+  "textSelect": "Select text",
   "select": "Select",
   "eraser": "Eraser",
   "draw": "Draw",

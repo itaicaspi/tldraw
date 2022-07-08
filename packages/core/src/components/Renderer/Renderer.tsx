@@ -102,6 +102,10 @@ export interface RendererProps<T extends TLShape, M = any> extends Partial<TLCal
    */
   hideGrid?: boolean
   /**
+   * (optional) When true, the renderer will not ignore all pointer events.
+   */
+  ignorePointer?: boolean
+  /**
    * (optional) When true, the renderer will show a dashed brush.
    */
   showDashedBrush?: boolean
@@ -157,6 +161,7 @@ export const Renderer = observer(function _Renderer<
   hideRotateHandles = false,
   hideBounds = false,
   hideGrid = true,
+  ignorePointer = false,
   showDashedBrush = false,
   ...rest
 }: RendererProps<T, M>) {
@@ -214,6 +219,7 @@ export const Renderer = observer(function _Renderer<
         hideRotateHandle={hideRotateHandles}
         hideResizeHandles={hideResizeHandles}
         hideGrid={hideGrid}
+        ignorePointer={ignorePointer}
         showDashedBrush={showDashedBrush}
         onBoundsChange={onBoundsChange}
         performanceMode={performanceMode}
