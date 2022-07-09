@@ -23,16 +23,52 @@ export function useZoomEvents<T extends HTMLElement>(
     document.addEventListener('gesturestart', preventGesture)
     // @ts-ignore
     document.addEventListener('gesturechange', preventGesture)
+    // @ts-ignore
+    window.document.addEventListener('scroll', handleScrollWrapper);
     return () => {
       // @ts-ignore
       document.removeEventListener('gesturestart', preventGesture)
       // @ts-ignore
       document.removeEventListener('gesturechange', preventGesture)
+      // @ts-ignore
+      window.document.removeEventListener('scroll', handleScrollWrapper);
     }
   }, [])
 
+  // @ts-ignore
+  const handleScrollWrapper = (event: WheelEvent) => handleScroll({event});
+  let previousScrollY = window.scrollY;
+  const handleScroll = React.useCallback<Handler<'scroll', WheelEvent>>(({event: e}) => {
+    e.preventDefault()
+
+    const offset = [0, window.scrollY - previousScrollY]
+    previousScrollY = window.scrollY;
+
+    const delta = Vec.mul(
+        [...offset],
+      1
+    )
+    if (Vec.isEqual(delta, [0, 0])) return
+    let wrappedEvent = {...e, clientX: 0, clientY: 0};
+    const info = inputs.pan(delta, wrappedEvent)
+
+    callbacks.onPan?.(info, wrappedEvent)
+    console.log("scroll", offset)
+  }, [callbacks, inputs, bounds]);
+
+  const isInsideTools = (element?: HTMLElement) : boolean => {
+    if (element == null || element.parentElement === null) return false;
+    if (element.parentElement.id === "TD-PrimaryTools") {
+      return true;
+    }
+    return isInsideTools(element.parentElement);
+  }
+
   const handleWheel = React.useCallback<Handler<'wheel', WheelEvent>>(
     ({ event: e }) => {
+      if (isInsideTools(e.target as HTMLElement)) return;
+
+      previousScrollY = window.scrollY;
       e.preventDefault()
       if (inputs.isPinching) return
 
@@ -63,6 +99,7 @@ export function useZoomEvents<T extends HTMLElement>(
       const info = inputs.pan(delta, e)
 
       callbacks.onPan?.(info, e)
+      console.log("wheel")
     },
     [callbacks, inputs, bounds]
   )
@@ -150,7 +187,7 @@ const PIXEL_STEP = 10
 const LINE_HEIGHT = 40
 const PAGE_HEIGHT = 800
 
-function normalizeWheel(event: any) {
+export function normalizeWheel(event: any) {
   let sX = 0,
     sY = 0, // spinX, spinY
     pX = 0,

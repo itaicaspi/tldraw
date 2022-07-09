@@ -21,6 +21,7 @@ import { GRID_SIZE } from '~constants'
 import { Loading } from '~components/Loading'
 import { ErrorBoundary as _Errorboundary } from 'react-error-boundary'
 import { ErrorFallback } from '~components/ErrorFallback'
+import Vec from '@tldraw/vec'
 
 const ErrorBoundary = _Errorboundary as any
 
@@ -85,6 +86,12 @@ export interface TldrawProps extends TDCallbacks {
   showUI?: boolean
 
   /**
+   * (optional) Defines the bounds of the viewport so that panning won't move the page
+   * outside of the bounds
+   */
+  viewportBounds?: Array<Array<number>> // [[left, top], [right,bottom]]
+
+  /**
    * (optional) Whether to the document should be read only.
    */
   readOnly?: boolean
@@ -115,6 +122,7 @@ export function Tldraw({
   showZoom = true,
   showStyles = true,
   showUI = true,
+  viewportBounds,
   readOnly = false,
   disableAssets = false,
   darkMode = false,
@@ -146,7 +154,7 @@ export function Tldraw({
 
   // Create a new app when the component mounts.
   const [app, setApp] = React.useState(() => {
-    const app = new TldrawApp(id, {
+    const app = new TldrawApp(id, viewportBounds,{
       onMount,
       onChange,
       onChangePresence,
@@ -175,7 +183,7 @@ export function Tldraw({
   // Create a new app if the `id` prop changes.
   React.useLayoutEffect(() => {
     if (id === sId) return
-    const newApp = new TldrawApp(id, {
+    const newApp = new TldrawApp(id, viewportBounds, {
       onMount,
       onChange,
       onChangePresence,
@@ -355,7 +363,7 @@ const InnerTldraw = React.memo(function InnerTldraw({
   showTools,
   showSponsorLink,
   readOnly,
-  showUI,
+  showUI
 }: InnerTldrawProps) {
   const app = useTldrawApp()
 
@@ -453,6 +461,7 @@ const InnerTldraw = React.memo(function InnerTldraw({
     }
   }, [settings.isDarkMode])
 
+  console.log(theme);
   return (
     <IntlProvider locale={translation.locale} messages={translation.messages}>
       <StyledLayout ref={rWrapper} tabIndex={-0}>
@@ -562,6 +571,7 @@ const InnerTldraw = React.memo(function InnerTldraw({
         )}
       </StyledLayout>
     </IntlProvider>
+
   )
 })
 

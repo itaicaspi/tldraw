@@ -186,6 +186,11 @@ export interface TDCallbacks {
 }
 
 export class TldrawApp extends StateManager<TDSnapshot> {
+  viewportBounds: TLBounds =  Utils.getBoundsFromPoints(
+    [[-Infinity, -Infinity],
+    [Infinity, Infinity]]
+  )
+
   callbacks: TDCallbacks = {}
 
   tools = {
@@ -267,7 +272,7 @@ export class TldrawApp extends StateManager<TDSnapshot> {
     offset: [0, 0],
   }
 
-  constructor(id?: string, callbacks = {} as TDCallbacks) {
+  constructor(id?: string, viewportBounds: Array<Array<number>> = [[-Infinity, -Infinity], [Infinity, Infinity]], callbacks = {} as TDCallbacks) {
     super(TldrawApp.defaultState, id, TldrawApp.version, (prev, next, prevVersion) => {
       return {
         ...next,
@@ -278,6 +283,7 @@ export class TldrawApp extends StateManager<TDSnapshot> {
       }
     })
 
+    this.viewportBounds = Utils.getBoundsFromPoints(viewportBounds)
     this.callbacks = callbacks
   }
 
@@ -3697,12 +3703,19 @@ export class TldrawApp extends StateManager<TDSnapshot> {
   onPinch: TLPinchEventHandler = (info, e) => this.currentTool.onPinch?.(info, e)
 
   onPan: TLWheelEventHandler = (info, e) => {
+    if (this.currentTool.type === "textSelect" && e.type === "wheel") return;
+    console.log("pan")
+
     if (this.appState.status === 'pinching') return
     // TODO: Pan and pinchzoom are firing at the same time. Considering turning one of them off!
 
-    const delta = Vec.div(info.delta, this.camera.zoom)
+    let delta = Vec.div(info.delta, this.camera.zoom)
     const prev = this.camera.point
-    const next = Vec.sub(prev, delta)
+    let next = Vec.sub(prev, delta)
+
+    // prevent panning outside the bounds
+    next = Utils.containInBounds(next, this.viewportBounds);
+    delta = Vec.sub(prev, next);
 
     if (Vec.isEqual(next, prev)) return
 

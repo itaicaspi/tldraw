@@ -453,6 +453,13 @@ export class Utils {
 
   /* --------------------- Bounds --------------------- */
 
+  static containInBounds(point: number[], bounds: TLBounds): number[] {
+    return [
+      Math.min(Math.max(point[0], bounds.minX), bounds.maxX),
+      Math.min(Math.max(point[1], bounds.minY), bounds.maxY)
+    ]
+  }
+
   static getBoundsSides(bounds: TLBounds): [string, number[][]][] {
     return this.getRectangleSides([bounds.minX, bounds.minY], [bounds.width, bounds.height])
   }
