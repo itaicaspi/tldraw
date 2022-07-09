@@ -1461,6 +1461,7 @@ export class TldrawApp extends StateManager<TDSnapshot> {
       },
       'loaded_document'
     )
+    this.resetCamera()
     const { point, zoom } = this.camera
     this.updateViewport(point, zoom)
     return this
@@ -3704,7 +3705,6 @@ export class TldrawApp extends StateManager<TDSnapshot> {
 
   onPan: TLWheelEventHandler = (info, e) => {
     if (this.currentTool.type === "textSelect" && e.type === "wheel") return;
-    console.log("pan")
 
     if (this.appState.status === 'pinching') return
     // TODO: Pan and pinchzoom are firing at the same time. Considering turning one of them off!

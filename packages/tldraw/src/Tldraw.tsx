@@ -461,7 +461,6 @@ const InnerTldraw = React.memo(function InnerTldraw({
     }
   }, [settings.isDarkMode])
 
-  console.log(theme);
   return (
     <IntlProvider locale={translation.locale} messages={translation.messages}>
       <StyledLayout ref={rWrapper} tabIndex={-0}>

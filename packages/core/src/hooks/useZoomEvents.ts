@@ -53,7 +53,6 @@ export function useZoomEvents<T extends HTMLElement>(
     const info = inputs.pan(delta, wrappedEvent)
 
     callbacks.onPan?.(info, wrappedEvent)
-    console.log("scroll", offset)
   }, [callbacks, inputs, bounds]);
 
   const isInsideTools = (element?: HTMLElement) : boolean => {
