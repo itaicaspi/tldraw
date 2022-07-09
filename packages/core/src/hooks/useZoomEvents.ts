@@ -6,6 +6,8 @@ import { Handler, useGesture, WebKitGestureEvent } from '@use-gesture/react'
 import { Vec } from '@tldraw/vec'
 import Utils from '~utils'
 
+let shouldScroll = true;
+
 // Capture zoom gestures (pinches, wheels and pans)
 export function useZoomEvents<T extends HTMLElement>(
   zoomRef: React.RefObject<number>,
@@ -40,19 +42,20 @@ export function useZoomEvents<T extends HTMLElement>(
   let previousScrollY = window.scrollY;
   const handleScroll = React.useCallback<Handler<'scroll', WheelEvent>>(({event: e}) => {
     e.preventDefault()
+    if (shouldScroll) {
+      const offset = [0, window.scrollY - previousScrollY]
+      previousScrollY = window.scrollY;
 
-    const offset = [0, window.scrollY - previousScrollY]
-    previousScrollY = window.scrollY;
-
-    const delta = Vec.mul(
+      const delta = Vec.mul(
         [...offset],
-      1
-    )
-    if (Vec.isEqual(delta, [0, 0])) return
-    let wrappedEvent = {...e, clientX: 0, clientY: 0};
-    const info = inputs.pan(delta, wrappedEvent)
+        1
+      )
+      if (Vec.isEqual(delta, [0, 0])) return
+      let wrappedEvent = {...e, clientX: 0, clientY: 0};
+      const info = inputs.pan(delta, wrappedEvent)
+      callbacks.onPan?.(info, wrappedEvent)
+    }
 
-    callbacks.onPan?.(info, wrappedEvent)
   }, [callbacks, inputs, bounds]);
 
   const isInsideTools = (element?: HTMLElement) : boolean => {
@@ -66,6 +69,8 @@ export function useZoomEvents<T extends HTMLElement>(
   const handleWheel = React.useCallback<Handler<'wheel', WheelEvent>>(
     ({ event: e }) => {
       if (isInsideTools(e.target as HTMLElement)) return;
+      shouldScroll = false;
+      setTimeout(function () { shouldScroll = true; }, 300);
 
       previousScrollY = window.scrollY;
       e.preventDefault()
@@ -96,9 +101,7 @@ export function useZoomEvents<T extends HTMLElement>(
       if (Vec.isEqual(delta, [0, 0])) return
 
       const info = inputs.pan(delta, e)
-
       callbacks.onPan?.(info, e)
-      console.log("wheel")
     },
     [callbacks, inputs, bounds]
   )
